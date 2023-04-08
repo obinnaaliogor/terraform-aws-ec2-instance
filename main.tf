@@ -31,7 +31,7 @@ instancetype_list = [ "t2.micro", "t2.medium", "t3.micro", "t2.small" ]
 names_server = ["Dev", "UAT", "Prod", "sales"]
 user-data = file("./terraform-aws-ec2-instance/httpd.sh")
 }
-#Very important the key above can 
+#Very important:
 #Though we have output block in our module but we dont seem to get or see those attribute after apply while calling our module 
 #This is because to get an output of a module outside the module, you will have to create an output block in the module calling file
 
