@@ -17,15 +17,19 @@ backend "s3" {
 
 provider "aws" {
   region = var.region #Here iam passing the provider as a variable 
-  profile = "obinna"
+  profile = var.profile
 }
 variable "region" {
     description = "Region in which AWS Resources will be created example us-east-1"
     type = string
-    default = "us-east-2" #I declared a variable for the provider without giving it default.
+    #default = "us-east-2" I declared a variable for the provider without giving it default.
     # value, the user will have to pass in the region they want the resources to be created at runtime "us-east-1"
 
-  
+}
+variable "profile" {
+  type = string
+  #default = "obinna"
+  description = "Enter your AWS profile name, enter default or the profile name"
 }
 
 module "ec2" {
