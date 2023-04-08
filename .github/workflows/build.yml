@@ -1,0 +1,56 @@
+name: Terraform vpc workflow
+on: 
+  - push
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} 
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #Means get the accesskey and secretaccess key from "secrets" 
+  # Where it is saved in your repo. Needed for terraform to be able to provision infra on aws.
+  #The way the env is passed means it covers for the entire workflow "Global variable", you can also decide to add it directly at the plan level.
+jobs:
+  Terraform-workflow:
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    #needs: ["sonarcloud"]
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v1 #This will copy our code into the runner
+    - name: Set Terraform 
+      uses: hashicorp/setup-terraform@v2 #This will install terraform into the runner
+      with: 
+        terraform_version: 1.4 #Version of Terraform that the runner will install
+    - name: Running Terraform command (Terraform init)
+      run: terraform init
+    - name: Terraform Validating
+      run: terraform validate #Checking for consistency in the code.
+    - name: Terraform Formating #Checking of the syntax
+      run: terraform fmt
+    - name: Terraform Planning 
+      run: terraform plan #Credentails are needed for terraform to perform this action
+    - name: release #This build step to enable the large semantic v file to be pushed to your repo.
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: npx semantic-release
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    - name: Terraform Apply Auto
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve #You can add a condition here that only on a PR can this run.
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
+
+  #sonarcloud:
+      #steps:
+      #- name: Sonarcloud scan
+        #uses: actions/checkout@v2
+        #with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+          #fetch-depth: 0
+      #- name: SonarCloud Scan
+        #uses: SonarSource/sonarcloud-github-action@master
+      #env:
+        #GITHUBPAT_TOKEN: ${{ secrets.GITHUBPAT_TOKEN }}
+        #SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#adding tag for a release using SMVersioning
