@@ -62,11 +62,11 @@ variable "instancetype_map" {
   }
   
 }*/
-variable "names_server" {
+/*variable "names_server" {
   type = list(string)
   #default = ["Dev", "UAT", "Prod"]
   
-}
+}*/
 variable "user-data" {
   type = string
   description = "This will be used to pass userdata"

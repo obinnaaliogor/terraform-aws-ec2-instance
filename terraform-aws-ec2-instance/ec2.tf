@@ -5,7 +5,7 @@ resource "aws_instance" "web" {
   #With the use of length a terraform fxn, you will return or access all the element in a list or map
   #instance_type = var.instancetype_map["qa"]
   instance_type = var.instancetype_list[count.index]
-  count = length(var.names_server)
+  count = length(var.instancetype_list)
   ami = data.aws_ami.RedHat.id
   user_data = var.user-data #file("./terraform-aws-ec2-instance/httpd.sh")
   
@@ -15,7 +15,7 @@ key_name = var.instance_key
 #You can attach multiple security group to an instance
   tags = {
     #Name = "prod-${count.index}" #You can also use prod-${count.index} when the name or tag is the same
-  Name = var.names_server[count.index]
+  Name = "${count.index}-prod"
   }
 }
 

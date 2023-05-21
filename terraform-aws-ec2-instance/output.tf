@@ -9,7 +9,7 @@ output "PublicIP" {
 }
 
 output "instance_id" {
-  value = aws_instance.web.*.id #Added "*" b/c we are creating multiple instances and needs all their IP
+  value = aws_instance.web.*.id #Added "*" it is called splat operator b/c we are creating multiple instances and needs all their IDS
 }
 
 output "amidata" {

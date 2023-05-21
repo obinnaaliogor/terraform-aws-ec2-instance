@@ -16,21 +16,18 @@ backend "s3" {
 }
 
 provider "aws" {
-  region = var.region #Here iam passing the provider as a variable 
-  profile = var.profile
+  region =  "us-east-2"
+  profile = "default"
 }
-variable "region" {
-    description = "Region in which AWS Resources will be created example us-east-1"
-    type = string
-    #default = "us-east-2" I declared a variable for the provider without giving it default.
-    # value, the user will have to pass in the region they want the resources to be created at runtime "us-east-1"
 
-}
+
+/*
 variable "profile" {
   type = string
-  #default = "obinna"
+  default = "Obinna"
   description = "Enter your AWS profile name, enter default or the profile name"
 }
+*/
 
 module "ec2" {
   source = "./terraform-aws-ec2-instance"
@@ -38,7 +35,7 @@ instance_key = "app"
 ingressrule = [ 80,443,8080,22 ]
 egressrule = [ 80,443,25,3306,53,8080 ]
 instancetype_list = [ "t2.micro", "t2.medium", "t3.micro", "t2.small" ]
-names_server = ["Dev", "UAT", "Prod", "sales"]
+#region = "us-east-2" #names_server = ["Dev", "UAT", "Prod", "sales"]
 user-data = file("./terraform-aws-ec2-instance/httpd.sh")
 }
 #Very important:
